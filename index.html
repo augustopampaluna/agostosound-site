@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AGOSTO is an Amsterdam-based DJ and electronic music producer focused on raw, industrial, dark and hypnotic techno.">
+    <meta name="theme-color" content="#090909">
+    <link rel="canonical" href="https://agostosound.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AGOSTO — Techno DJ &amp; Producer">
+    <meta property="og:description" content="AGOSTO is an Amsterdam-based DJ and electronic music producer focused on raw, industrial, dark and hypnotic techno.">
+    <meta property="og:url" content="https://agostosound.com/">
+    <meta property="og:image" content="https://agostosound.com/static/branding/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AGOSTO — Techno DJ &amp; Producer">
+    <meta name="twitter:description" content="AGOSTO is an Amsterdam-based DJ and electronic music producer focused on raw, industrial, dark and hypnotic techno.">
+    <meta name="twitter:image" content="https://agostosound.com/static/branding/og-image.png">
+    <link rel="icon" href="./static/branding/favicon.png" type="image/png">
+    <link rel="stylesheet" href="./styles.css">
+    <title> AGOSTO  |  Chapter one </title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="./index.html#top" aria-label="AGOSTO home">
+        <img src="./static/branding/logo-agosto.jpeg" alt="AGOSTO">
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#music">Music</a>
+        <a href="#about">About</a>
+        <a href="./world.html">World</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="sr-only">Open navigation</span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <nav class="mobile-nav" id="mobile-menu" aria-label="Mobile navigation" data-mobile-nav>
+        <a href="#music">Music</a>
+        <a href="#about">About</a>
+        <a href="./world.html">World</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <img class="hero-image" src="./static/photos/hero.png" alt="" aria-hidden="true">
+        <div class="hero-shade"></div>
+        <div class="hero-content" data-reveal>
+          <p class="eyebrow">Amsterdam <span aria-hidden="true">•</span> Netherlands</p>
+          <h1 id="hero-title">AGOSTO</h1>
+          <p class="hero-genre">Electronic music producer and performer</p>
+          <div class="hero-actions">
+            <a class="button button--solid" href="#music">Listen</a>
+            <a class="button button--ghost" href="./world.html">Enter the world</a>
+          </div>
+        </div>
+        <a class="scroll-cue" href="#music" aria-label="Scroll to music">Scroll</a>
+      </section>
+
+      <section class="section music-section" id="music" aria-labelledby="music-title">
+        <img class="music-smoke music-smoke--top" src="./static/decorations/black-smoke-up.png" alt="" aria-hidden="true" loading="lazy">
+        <div class="container">
+          <div class="section-heading" data-reveal>
+            <p class="eyebrow">Selected releases</p>
+            <h2 id="music-title">Music</h2>
+          </div>
+          <div class="featured-release" data-featured-release aria-live="polite"></div>
+          <div class="archive-releases" data-archive-releases aria-live="polite">
+            <div class="archive-heading">
+              <p class="eyebrow">Archive / Earlier releases</p>
+            </div>
+            <div class="archive-grid" data-archive-grid></div>
+          </div>
+          <div class="player-shell" id="player" data-player hidden aria-live="polite">
+            <div class="player-ui">
+              <button class="player-toggle" type="button" data-player-toggle aria-label="Play current track" aria-pressed="false">▶</button>
+              <div class="player-meta">
+                <p class="eyebrow">Now playing</p>
+                <p class="player-title" data-player-title></p>
+              </div>
+              <div class="player-timing" aria-live="off">
+                <span data-player-current>0:00</span>
+                <span aria-hidden="true">/</span>
+                <span data-player-duration>0:00</span>
+              </div>
+              <div class="player-progress" data-player-progress role="slider" tabindex="0" aria-label="Track progress" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+                <span class="player-progress-fill"></span>
+                <span class="player-progress-knob"></span>
+              </div>
+              <a class="player-source" data-player-source target="_blank" rel="noreferrer">via SoundCloud</a>
+              <button class="player-icon-button" type="button" data-player-close aria-label="Close player">x</button>
+            </div>
+            <div class="soundcloud-frame" data-player-frame aria-hidden="true">
+              <iframe title="SoundCloud playback controller" tabindex="-1" allow="autoplay"></iframe>
+            </div>
+          </div>
+        </div>
+        <img class="music-smoke music-smoke--bottom" src="./static/decorations/black-smoke-down.png" alt="" aria-hidden="true" loading="lazy">
+      </section>
+
+      <div class="section-transition" aria-hidden="true"></div>
+
+      <section class="section about-section" id="about" aria-labelledby="about-title">
+        <img class="about-smoke about-smoke--top" src="./static/decorations/white-smoke-up.png" alt="" aria-hidden="true" loading="lazy">
+        <div class="container about-layout">
+          <div class="about-photo" data-reveal>
+            <img src="./static/photos/portrait-01.png" alt="AGOSTO standing outside an Amsterdam doorway" loading="lazy">
+          </div>
+          <div class="about-copy" data-reveal>
+            <p class="eyebrow">The artist</p>
+            <h2 id="about-title">About</h2>
+            <div class="intro-copy" data-bio-short></div>
+            <div class="expandable" id="about-long" data-bio-long aria-hidden="true"></div>
+            <button class="text-button" type="button" aria-expanded="false" aria-controls="about-long" data-about-toggle>Read more</button>
+          </div>
+        </div>
+        <img class="about-smoke about-smoke--bottom" src="./static/decorations/white-smoke-down.png" alt="" aria-hidden="true" loading="lazy">
+      </section>
+
+      <section class="section live-section" id="live" aria-labelledby="live-title">
+        <div class="live-image" data-reveal>
+          <img src="./static/photos/live-01.png" alt="AGOSTO performing a live DJ set" loading="lazy">
+        </div>
+        <div class="container live-content" data-reveal>
+          <p class="eyebrow">Live</p>
+          <h2 id="live-title">DJ / Producer<br>Amsterdam</h2>
+          <a class="button button--ghost" data-booking>Book AGOSTO</a>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+        <div class="container" data-reveal>
+          <p class="eyebrow">Contact / Links</p>
+          <h2 id="contact-title">Contact</h2>
+          <div class="contact-grid" data-links></div>
+        </div>
+        <img class="contact-smoke" src="./static/decorations/white-smoke-down.png" alt="" aria-hidden="true" loading="lazy">
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <span>AGOSTO</span>
+        <span>Amsterdam</span>
+        <a href="https://www.instagram.com/agostosound/" target="_blank" rel="noreferrer">@agostosound</a>
+        <span>&copy; <span data-year></span></span>
+      </div>
+    </footer>
+    <script src="https://w.soundcloud.com/player/api.js" defer></script>
+    <script src="./script.js" defer></script>
+  </body>
+</html>

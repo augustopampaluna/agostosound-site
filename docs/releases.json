@@ -1,0 +1,52 @@
+[
+  {
+    "id": "peces-raros-el-eden-remix",
+    "type": "single",
+    "title": "Peces Raros - El Eden (AgostoSound Remix)",
+    "artwork": "/static/releases/peces-raros-el-eden-remix.jpg",
+    "tracks": [
+      {
+        "title": "Peces Raros - El Eden (AgostoSound Remix)",
+        "track_number": 1,
+        "soundcloud": "https://soundcloud.com/agostosound/peces-raros-el-eden-agostosound-remix"
+      }
+    ]
+  },
+  {
+    "id": "vampiric-addiction",
+    "type": "single",
+    "title": "Vampiric Addiction",
+    "artwork": "/static/releases/vampiric-addiction.jpg",
+    "tracks": [
+      {
+        "title": "Vampiric Addiction",
+        "track_number": 1,
+        "soundcloud": "https://soundcloud.com/agostosound/vampiric-addiction-original-mix"
+      }
+    ]
+  },
+  {
+    "id": "chapter-one",
+    "type": "ep",
+    "title": "/Chapter one",
+    "artwork": "/static/releases/chapter-one.jpg",
+    "soundcloud": "https://soundcloud.com/agostosound/sets/chapter-one",
+    "tracks": [
+      {
+        "title": "Reestraat Rain",
+        "track_number": 1,
+        "soundcloud": "https://soundcloud.com/agostosound/1-reestraat-rain-1"
+      },
+      {
+        "title": "Look at Me",
+        "track_number": 2,
+        "soundcloud": "https://soundcloud.com/agostosound/2-look-at-me-2"
+      },
+      {
+        "title": "Daily Fright",
+        "track_number": 3,
+        "soundcloud": "https://soundcloud.com/agostosound/3-daily-fright-3"
+      }
+    ]
+  }
+]

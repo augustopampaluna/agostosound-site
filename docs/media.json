@@ -1,0 +1,21 @@
+{
+  "featured": {
+    "title": "",
+    "type": "",
+    "url": "",
+    "image": ""
+  },
+  "soundcloud": [
+    {
+      "title": "",
+      "url": ""
+    }
+  ],
+  "youtube": [
+    {
+      "title": "",
+      "url": "",
+      "thumbnail": ""
+    }
+  ]
+}
