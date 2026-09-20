@@ -1,10 +1,6 @@
 const contentFiles = {
   shortBio: "./docs/bio-short.md",
   longBio: "./docs/bio-long.md",
-  world: "./docs/world.md",
-  character: "./docs/character.md",
-  locations: "./docs/locations.md",
-  manifesto: "./docs/manifesto.md",
   links: "./docs/links.json",
   releases: "./docs/releases.json"
 };
@@ -40,8 +36,6 @@ const markdownSections = (markdown) => {
   if (current.heading || current.paragraphs.length) sections.push(current);
   return sections;
 };
-
-const withoutBpm = (paragraphs) => paragraphs.filter((paragraph) => !/\bBPM\b/i.test(paragraph));
 
 const fillParagraphs = (element, markdown, excludeWorldContext = false, omitOpeningParagraph = false) => {
   const hiddenOnHome = /conceptual project|narrative universe|The story never/i;
@@ -80,6 +74,23 @@ const playbackTitle = (className, title, url, id) => {
 const releaseTitle = (title, url, id) => {
   const heading = createElement("h3", "release-title");
   heading.append(playbackTitle("release-title-button", title, url, id));
+  return heading;
+};
+
+const archiveReleaseTitle = (title, url, id) => {
+  const heading = createElement("h3", "release-title");
+  const button = playbackTitle("release-title-button", title, url, id);
+  const match = title.match(/^(.*?)(\s*\([^()]+\))$/);
+
+  if (match) {
+    button.textContent = "";
+    button.append(
+      createElement("span", "release-title-main", match[1].trim()),
+      createElement("span", "release-title-detail", match[2].trim())
+    );
+  }
+
+  heading.append(button);
   return heading;
 };
 
@@ -131,7 +142,7 @@ const renderArchiveReleases = (releases) => {
     const body = createElement("div", "release-body");
     body.append(
       createElement("p", "release-label", "Single"),
-      releaseTitle(release.title, playback.url, playback.id),
+      archiveReleaseTitle(release.title, playback.url, playback.id),
       makePlayButton(playback.title, playback.url, playback.id)
     );
     card.append(releaseArtwork(release, "archive-release-art", playback), body);
@@ -143,66 +154,6 @@ const renderReleases = (releases) => {
   const featured = releases.find((release) => release.type === "ep");
   if (featured) renderFeaturedRelease(featured);
   renderArchiveReleases(releases.filter((release) => release.type === "single"));
-};
-
-const renderWorld = (worldText, characterText, locationsText, manifestoText) => {
-  const target = document.querySelector("[data-world-content]");
-  const world = markdownSections(worldText).map((section) => ({ ...section, paragraphs: withoutBpm(section.paragraphs) }));
-  const character = markdownSections(characterText).map((section) => ({ ...section, paragraphs: withoutBpm(section.paragraphs) }))[0];
-  const locations = markdownSections(locationsText).map((section) => ({ ...section, paragraphs: withoutBpm(section.paragraphs) }));
-  const manifesto = withoutBpm(markdownSections(manifestoText)[0]?.paragraphs || []);
-  const byHeading = (items, heading) => items.find((item) => item.heading === heading);
-  const quote = (text) => manifesto.find((line) => line === text);
-
-  const textBlock = (section) => {
-    if (!section) return document.createDocumentFragment();
-    const block = createElement("article", "world-block");
-    if (section.heading) block.append(createElement("h2", "", section.heading));
-    section.paragraphs.forEach((paragraph) => block.append(createElement("p", "", paragraph)));
-    block.dataset.reveal = "";
-    block.dataset.worldReveal = "";
-    return block;
-  };
-
-  target.append(textBlock(byHeading(world, "The World")));
-  target.append(textBlock(byHeading(world, "The Night")));
-
-  const entity = createElement("div", "world-entity");
-  entity.dataset.reveal = "";
-  entity.dataset.worldReveal = "";
-  const entityImage = createElement("div", "entity-image");
-  const image = document.createElement("img");
-  image.src = "./static/world/character.png";
-  image.alt = "The entity of the AGOSTO world";
-  image.loading = "lazy";
-  entityImage.append(image);
-  entity.append(textBlock(character), entityImage);
-  target.append(entity);
-
-  [
-    quote("The music carries the story."),
-    byHeading(world, "The X"),
-    byHeading(world, "Manifestation"),
-    quote("The X opens slowly."),
-    byHeading(world, "Amsterdam")
-  ].forEach((item) => {
-    target.append(typeof item === "string" ? createElement("p", "manifesto-line", item) : textBlock(item));
-  });
-
-  const locationsWrap = createElement("div", "locations");
-  locations.slice(1).forEach((location) => {
-    const item = createElement("article", "location");
-    item.append(createElement("h3", "", location.heading));
-    location.paragraphs.forEach((paragraph) => item.append(createElement("p", "", paragraph)));
-    item.dataset.reveal = "";
-    item.dataset.worldReveal = "";
-    locationsWrap.append(item);
-  });
-  target.append(locationsWrap);
-
-  const closingQuote = quote("The silence cannot follow us.");
-  if (closingQuote) target.append(createElement("p", "manifesto-line", closingQuote));
-  target.append(textBlock(byHeading(world, "The Silence")));
 };
 
 const renderLinks = (links) => {
@@ -245,6 +196,7 @@ const setupPlayer = () => {
   const durationTime = document.querySelector("[data-player-duration]");
   const progress = document.querySelector("[data-player-progress]");
   const source = document.querySelector("[data-player-source]");
+  const artwork = document.querySelector("[data-player-artwork]");
   const toggle = document.querySelector("[data-player-toggle]");
   const closeButton = document.querySelector("[data-player-close]");
   const iframe = document.querySelector("[data-player-frame] iframe");
@@ -268,6 +220,7 @@ const setupPlayer = () => {
   const updateUi = () => {
     const ratio = state.duration ? Math.min(state.position / state.duration, 1) : 0;
     title.textContent = state.currentTrack?.title || "";
+    artwork.src = state.currentTrack?.artwork || "";
     currentTime.textContent = formatTime(state.position);
     durationTime.textContent = formatTime(state.duration);
     source.href = state.currentTrack?.url || "https://soundcloud.com/agostosound";
@@ -398,7 +351,13 @@ const setupPlayer = () => {
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-play-url]");
     if (!button) return;
-    const track = { id: button.dataset.trackId, title: button.dataset.trackTitle, url: button.dataset.playUrl };
+    const releaseArtwork = button.closest(".featured-release-card, .archive-release")?.querySelector("img");
+    const track = {
+      id: button.dataset.trackId,
+      title: button.dataset.trackTitle,
+      url: button.dataset.playUrl,
+      artwork: releaseArtwork?.currentSrc || releaseArtwork?.src || ""
+    };
     if (state.currentTrack?.id === track.id && state.ready) {
       togglePlayback();
       showPlayer();
@@ -446,6 +405,30 @@ const setupNavigation = () => {
   }));
 };
 
+const setupWorldStage = () => {
+  const scenes = [...document.querySelectorAll("[data-world-scene]")];
+  const images = [...document.querySelectorAll("[data-world-stage-image]")];
+  if (!scenes.length || !images.length) return;
+
+  const setActiveScene = (scene) => {
+    const activeName = scene.dataset.worldScene;
+    images.forEach((image) => {
+      image.classList.toggle("is-active", image.dataset.worldStageImage === activeName);
+    });
+  };
+
+  if (!("IntersectionObserver" in window)) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    const visibleScene = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0];
+    if (visibleScene) setActiveScene(visibleScene.target);
+  }, { threshold: [.35, .55, .75], rootMargin: "-16% 0px -16%" });
+
+  scenes.forEach((scene) => observer.observe(scene));
+};
+
 const setupReveals = () => {
   const items = document.querySelectorAll("[data-reveal]");
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
@@ -469,14 +452,10 @@ const init = async () => {
   });
   setupNavigation();
   setupPlayer();
+  setupWorldStage();
 
   try {
-    if (document.querySelector("[data-world-content]")) {
-      const [world, character, locations, manifesto] = await Promise.all([
-        getText(contentFiles.world), getText(contentFiles.character), getText(contentFiles.locations), getText(contentFiles.manifesto)
-      ]);
-      renderWorld(world, character, locations, manifesto);
-    } else {
+    if (document.querySelector("[data-bio-short]")) {
       const [shortBio, longBio, links, releases] = await Promise.all([
         getText(contentFiles.shortBio), getText(contentFiles.longBio), getJson(contentFiles.links), getJson(contentFiles.releases)
       ]);

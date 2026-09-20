@@ -15,13 +15,39 @@
   {
     "id": "vampiric-addiction",
     "type": "single",
-    "title": "Vampiric Addiction",
+    "title": "Vampiric Addiction (Original mix)",
     "artwork": "/static/releases/vampiric-addiction.jpg",
     "tracks": [
       {
-        "title": "Vampiric Addiction",
+        "title": "Vampiric Addiction (Original mix)",
         "track_number": 1,
         "soundcloud": "https://soundcloud.com/agostosound/vampiric-addiction-original-mix"
+      }
+    ]
+  },
+  {
+    "id": "technologic-daft-punk-bootleg",
+    "type": "single",
+    "title": "Technologic (Daft Punk Bootleg)",
+    "artwork": "/static/releases/technologic.jpg",
+    "tracks": [
+      {
+        "title": "Technologic (Daft Punk Bootleg)",
+        "track_number": 1,
+        "soundcloud": "https://soundcloud.com/agostosound/technologic-daft-punk-bootleg"
+      }
+    ]
+  },
+  {
+    "id": "ms03-minimal-techno",
+    "type": "single",
+    "title": "MS.03 - Minimal Techno",
+    "artwork": "/static/releases/ms03.jpg",
+    "tracks": [
+      {
+        "title": "MS.03 - Minimal Techno",
+        "track_number": 1,
+        "soundcloud": "https://soundcloud.com/agostosound/ms03-minimal-techno"
       }
     ]
   },

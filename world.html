@@ -21,7 +21,7 @@
 
     <header class="site-header" data-header>
       <a class="brand" href="./index.html#top" aria-label="AGOSTO home">
-        <img src="./static/branding/logo-agosto.jpeg" alt="AGOSTO">
+        <img src="./static/branding/logo-animated.webp" alt="AGOSTO">
       </a>
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="./index.html">Home</a>
@@ -42,16 +42,82 @@
       </nav>
     </header>
 
-    <main id="main-content">
-      <section class="world-page-hero" aria-labelledby="world-title">
-        <img src="./static/world/world-01.png" alt="A rain-soaked Amsterdam canal at night">
-        <div class="world-page-shade"></div>
-        <div class="container world-page-heading" data-reveal data-world-reveal>
-          <p class="eyebrow">AGOSTO / Archive 01</p>
-          <h1 id="world-title">The World</h1>
-        </div>
-      </section>
-      <div class="world-content" data-world-content></div>
+    <main id="main-content" class="world-experience" data-world-experience>
+      <div class="world-stage" aria-hidden="true">
+        <img class="world-stage__image world-stage__image--threshold is-active" data-world-stage-image="threshold" src="./static/world/01-threshold.png" alt="">
+        <img class="world-stage__image world-stage__image--presence" data-world-stage-image="presence" src="./static/world/02-presence.png" alt="">
+        <img class="world-stage__image world-stage__image--mark" data-world-stage-image="mark" src="./static/world/04-city-a.png" alt="">
+        <img class="world-stage__image world-stage__image--place" data-world-stage-image="place" src="./static/world/05-city-b.png" alt="">
+        <img class="world-stage__image world-stage__image--floor" data-world-stage-image="floor" src="./static/world/06-floor.png" alt="">
+        <div class="world-stage__shade"></div>
+      </div>
+
+      <div class="world-scenes">
+        <section class="world-scene world-scene--threshold" data-world-scene="threshold" aria-labelledby="world-title">
+          <div class="container world-scene__copy" data-reveal data-world-reveal>
+          <p class="eyebrow">01</p>
+          <h1 id="world-title">World</h1>
+          <div class="world-scene__body">
+            <p>AGOSTO is built around a narrative techno universe where each track acts as a fragment of something larger. A place, a memory, a tension or a transformation can appear for a few minutes and disappear again.</p>
+            <p>There is no single story to follow. The world reveals itself through sound, images and recurring signs.</p>
+            <p>The music carries the story. The artist only opens the door.</p>
+          </div>
+          </div>
+        </section>
+
+        <section class="world-scene world-scene--presence" data-world-scene="presence" aria-labelledby="presence-title">
+          <div class="container world-scene__copy" data-reveal data-world-reveal>
+          <p class="eyebrow">02</p>
+          <h2 id="presence-title">The Presence</h2>
+          <div class="world-scene__body">
+            <p>At the center of the world is a vampiric presence &mdash; part traditional creature, part contemporary club spirit.</p>
+            <p>It does not exist to dominate the story or become a mascot. It appears around it: on walls, in reflections, inside artwork and between fragments of the music.</p>
+            <p>It does not look for blood. It is drawn to movement, sweat, resonance and collective energy.</p>
+            <p>When the city becomes quiet, it begins to appear.</p>
+          </div>
+          </div>
+        </section>
+
+        <section class="world-scene world-scene--mark" data-world-scene="mark" aria-labelledby="mark-title">
+          <div class="container world-scene__copy" data-reveal data-world-reveal>
+          <p class="eyebrow">03</p>
+          <h2 id="mark-title">The Mark</h2>
+          <div class="world-scene__body">
+            <p>The X is the recurring sign of this world.</p>
+            <p>It can mean a crossing, a portal, an error or the moment when one reality begins to become another. Sometimes it appears clearly. Sometimes it is hidden inside a photograph, a visual or a release.</p>
+            <p>The crossed eyes are not decoration. They mean that the threshold has already been crossed.</p>
+            <p>Once you notice the X, you are already inside.</p>
+          </div>
+          </div>
+        </section>
+
+        <section class="world-scene world-scene--place" data-world-scene="place" aria-labelledby="place-title">
+          <div class="container world-scene__copy" data-reveal data-world-reveal>
+          <p class="eyebrow">04</p>
+          <h2 id="place-title">The Place</h2>
+          <div class="world-scene__body">
+            <p>Amsterdam is the place where this presence can most often be found.</p>
+            <p>Canals, bridges, rain, bicycles, tilted houses, tunnels and reflected lights become part of the same nocturnal system. Familiar places can return under different names or behave differently once they enter the narrative.</p>
+            <p>A canal can become a rift. A street can become a passage. A club can become a refuge.</p>
+            <p>The city is not the setting. It is part of the instrument.</p>
+          </div>
+          </div>
+        </section>
+
+        <section class="world-scene world-scene--floor" data-world-scene="floor" aria-labelledby="floor-title">
+          <div class="container world-scene__copy" data-reveal data-world-reveal>
+          <p class="eyebrow">05</p>
+          <h2 id="floor-title">The Floor</h2>
+          <div class="world-scene__body">
+            <p>The story is built in fragments. A release can reveal a place, a memory, a new sign or another piece of the presence without explaining the entire world.</p>
+            <p>Nothing needs to be understood beforehand. The lore exists around the music, not in front of it.</p>
+            <p>And the audience is not outside the story. The moment the music reaches the floor, bodies, movement and collective energy become part of it.</p>
+            <p>The crowd does not observe the world. It unlocks it.</p>
+          </div>
+          <a class="button button--ghost" href="./index.html#music">Enter the sound <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </section>
+      </div>
     </main>
 
     <footer class="site-footer">

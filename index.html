@@ -24,7 +24,7 @@
 
     <header class="site-header" data-header>
       <a class="brand" href="./index.html#top" aria-label="AGOSTO home">
-        <img src="./static/branding/logo-agosto.jpeg" alt="AGOSTO">
+        <img src="./static/branding/logo-animated.webp" alt="AGOSTO">
       </a>
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#music">Music</a>
@@ -77,6 +77,7 @@
           </div>
           <div class="player-shell" id="player" data-player hidden aria-live="polite">
             <div class="player-ui">
+              <img class="player-artwork" data-player-artwork alt="" aria-hidden="true">
               <button class="player-toggle" type="button" data-player-toggle aria-label="Play current track" aria-pressed="false">▶</button>
               <div class="player-meta">
                 <p class="eyebrow">Now playing</p>
@@ -122,14 +123,22 @@
       </section>
 
       <section class="section live-section" id="live" aria-labelledby="live-title">
-        <div class="live-image" data-reveal>
-          <img src="./static/photos/live-01.png" alt="AGOSTO performing a live DJ set" loading="lazy">
+        <div class="live-media" data-reveal>
+          <picture>
+            <source media="(max-width: 700px)" srcset="./static/photos/live-01-mobile.png">
+            <img src="./static/photos/live-01-wide.png" alt="AGOSTO performing a live DJ set" loading="lazy">
+          </picture>
         </div>
-        <div class="container live-content" data-reveal>
-          <p class="eyebrow">Live</p>
-          <h2 id="live-title">DJ / Producer<br>Amsterdam</h2>
-          <a class="button button--ghost" data-booking>Book AGOSTO</a>
+        <div class="live-shade" aria-hidden="true"></div>
+        <div class="container live-layout">
+          <div class="live-copy" data-reveal>
+            <p class="eyebrow">DJ / LIVE</p>
+            <h2 id="live-title">HYBRID PERFORMER</h2>
+            <p class="live-description">Hybrid club sets shaped for impact, tension and release.<br><small>A focused blend of DJ control, live elements and nocturnal energy.</small></p>
+            <a class="button button--ghost" data-booking>BOOK AGOSTO</a>
+          </div>
         </div>
+        <img class="live-smoke" src="./static/decorations/live-smoke-overlay.png" alt="" aria-hidden="true" loading="lazy">
       </section>
 
       <section class="section contact-section" id="contact" aria-labelledby="contact-title">
