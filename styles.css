@@ -240,8 +240,9 @@ body.has-player { padding-bottom: 62px; }
   .world-scene--threshold h1 { font-size: clamp(4.5rem, 20vw, 7rem); }
   .world-scene__body { font-size: .94rem; line-height: 1.43; }
   .world-scene--presence .world-scene__copy { align-self: flex-end; padding-bottom: clamp(2.5rem, 9svh, 4.5rem); }
-  .world-stage__image--presence { object-position: 58% center; }
-  .world-stage__image--mark { object-position: 63% center; }
+  .world-stage__image--presence { object-position: 37.5% center; }
+  .world-stage__image--mark { object-position: 70% center; }
+  .world-stage__image--place { object-position: right center; }
   .world-stage__image--floor { object-position: 58% center; }
 }
 
