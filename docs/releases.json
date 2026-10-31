@@ -1,5 +1,31 @@
 [
   {
+    "id": "rt002-raw-techno-dj-set",
+    "type": "single",
+    "title": "RT002 - Raw Techno DJ Set",
+    "artwork": "/static/releases/rt002.jpg",
+    "tracks": [
+      {
+        "title": "RT002 - Raw Techno DJ Set",
+        "track_number": 1,
+        "mixcloud": "https://www.mixcloud.com/AgostoSound/rt002-raw-techno-dj-set/"
+      }
+    ]
+  },
+  {
+    "id": "rt001-raw-techno-dj-set",
+    "type": "single",
+    "title": "RT001 - Raw Techno DJ Set",
+    "artwork": "/static/releases/rt001.jpg",
+    "tracks": [
+      {
+        "title": "RT001 - Raw Techno DJ Set",
+        "track_number": 1,
+        "mixcloud": "https://www.mixcloud.com/AgostoSound/agosto-rt001-raw-techno-dj-set/"
+      }
+    ]
+  },
+  {
     "id": "peces-raros-el-eden-remix",
     "type": "single",
     "title": "Peces Raros - El Eden (AgostoSound Remix)",
@@ -41,13 +67,13 @@
   {
     "id": "ms03-minimal-techno",
     "type": "single",
-    "title": "MS.03 - Minimal Techno",
-    "artwork": "/static/releases/ms03.jpg",
+    "title": "MT003 - Minimal Techno DJ Set",
+    "artwork": "/static/releases/mt003.jpg",
     "tracks": [
       {
-        "title": "MS.03 - Minimal Techno",
+        "title": "MT003 - Minimal Techno DJ Set",
         "track_number": 1,
-        "soundcloud": "https://soundcloud.com/agostosound/ms03-minimal-techno"
+        "mixcloud": "https://www.mixcloud.com/AgostoSound/ms03-minimal-techno/"
       }
     ]
   },

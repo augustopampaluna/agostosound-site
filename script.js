@@ -5,7 +5,8 @@ const contentFiles = {
   releases: "./docs/releases.json"
 };
 
-const getText = (path) => fetch(path).then((response) => {
+// "no-cache" revalidates docs/ with the server so content edits show up without a hard reload.
+const getText = (path) => fetch(path, { cache: "no-cache" }).then((response) => {
   if (!response.ok) throw new Error(`Unable to load ${path}`);
   return response.text();
 });
@@ -94,6 +95,10 @@ const archiveReleaseTitle = (title, url, id) => {
   return heading;
 };
 
+const playbackUrl = (item) => item.mixcloud || item.soundcloud;
+const playbackProvider = (url) => (/mixcloud\.com/i.test(url || "") ? "mixcloud" : "soundcloud");
+const providerLabels = { mixcloud: "Mixcloud", soundcloud: "SoundCloud" };
+
 const releaseArtwork = (release, className, playback) => {
   const artwork = createElement("button", `${className} playable-artwork`);
   artwork.type = "button";
@@ -110,7 +115,7 @@ const renderFeaturedRelease = (release) => {
   const target = document.querySelector("[data-featured-release]");
   const card = createElement("article", "featured-release-card");
   const body = createElement("div", "release-body");
-  const fullEp = { id: `${release.id}-full`, title: release.title, url: release.soundcloud };
+  const fullEp = { id: `${release.id}-full`, title: release.title, url: playbackUrl(release) };
   body.append(createElement("p", "release-label", "EP"));
   body.append(releaseTitle(release.title, fullEp.url, fullEp.id));
 
@@ -119,8 +124,8 @@ const renderFeaturedRelease = (release) => {
     const item = document.createElement("li");
     item.append(
       createElement("span", "track-number", String(track["track_number"]).padStart(2, "0")),
-      playbackTitle("track-title track-title-button", track.title, track.soundcloud, `${release.id}-${track["track_number"]}`),
-      makePlayButton(track.title, track.soundcloud, `${release.id}-${track["track_number"]}`)
+      playbackTitle("track-title track-title-button", track.title, playbackUrl(track), `${release.id}-${track["track_number"]}`),
+      makePlayButton(track.title, playbackUrl(track), `${release.id}-${track["track_number"]}`)
     );
     tracks.append(item);
   });
@@ -137,7 +142,7 @@ const renderArchiveReleases = (releases) => {
   const target = document.querySelector("[data-archive-grid]");
   releases.forEach((release) => {
     const track = release.tracks[0];
-    const playback = { id: `${release.id}-${track["track_number"]}`, title: track.title, url: track.soundcloud };
+    const playback = { id: `${release.id}-${track["track_number"]}`, title: track.title, url: playbackUrl(track) };
     const card = createElement("article", "archive-release");
     const body = createElement("div", "release-body");
     body.append(
@@ -158,8 +163,8 @@ const renderReleases = (releases) => {
 
 const renderLinks = (links) => {
   const target = document.querySelector("[data-links]");
-  const services = ["instagram", "soundcloud", "spotify", "youtube", "mavelpoint"];
-  const labels = { instagram: "Instagram", soundcloud: "SoundCloud", spotify: "Spotify", youtube: "YouTube", mavelpoint: "MavelPoint" };
+  const services = ["instagram", "soundcloud", "mixcloud", "spotify", "youtube", "mavelpoint"];
+  const labels = { instagram: "Instagram", soundcloud: "SoundCloud", mixcloud: "Mixcloud", spotify: "Spotify", youtube: "YouTube", mavelpoint: "MavelPoint" };
   const entries = services.filter((key) => links[key]).map((key) => ({
     label: labels[key],
     href: /^https?:\/\//.test(links[key]) ? links[key] : `https://${links[key]}`,
@@ -199,8 +204,7 @@ const setupPlayer = () => {
   const artwork = document.querySelector("[data-player-artwork]");
   const toggle = document.querySelector("[data-player-toggle]");
   const closeButton = document.querySelector("[data-player-close]");
-  const iframe = document.querySelector("[data-player-frame] iframe");
-  const state = { currentTrack: null, duration: 0, isPlaying: false, position: 0, ready: false, timer: null, widget: null };
+  const state = { currentTrack: null, duration: 0, isPlaying: false, position: 0, provider: null, timer: null };
 
   const formatTime = (milliseconds) => {
     const seconds = Math.max(0, Math.floor((milliseconds || 0) / 1000));
@@ -224,6 +228,7 @@ const setupPlayer = () => {
     currentTime.textContent = formatTime(state.position);
     durationTime.textContent = formatTime(state.duration);
     source.href = state.currentTrack?.url || "https://soundcloud.com/agostosound";
+    source.textContent = `via ${providerLabels[state.provider] || providerLabels.soundcloud}`;
     progress.style.setProperty("--progress", String(ratio));
     progress.setAttribute("aria-valuemax", String(Math.round(state.duration)));
     progress.setAttribute("aria-valuenow", String(Math.round(state.position)));
@@ -234,13 +239,13 @@ const setupPlayer = () => {
     updateTrackButtons();
   };
 
+  const activePlayer = () => players[state.provider];
+  const isReady = () => Boolean(activePlayer()?.isReady());
+
   const refreshProgress = () => {
-    if (!state.widget || !state.ready) return;
-    state.widget.getPosition((position) => {
+    if (!isReady()) return;
+    activePlayer().getProgress((position, duration) => {
       state.position = position;
-      updateUi();
-    });
-    state.widget.getDuration((duration) => {
       state.duration = duration;
       updateUi();
     });
@@ -257,79 +262,164 @@ const setupPlayer = () => {
     state.timer = window.setInterval(refreshProgress, 250);
   };
 
+  // Widget events only count while their provider is the one in the player bar.
+  const playbackEvents = (provider) => {
+    const forProvider = (handler) => () => {
+      if (state.provider === provider) handler();
+    };
+    return {
+      play: forProvider(() => {
+        state.isPlaying = true;
+        startProgressTimer();
+        updateUi();
+      }),
+      pause: forProvider(() => {
+        state.isPlaying = false;
+        stopProgressTimer();
+        refreshProgress();
+        updateUi();
+      }),
+      finish: forProvider(() => {
+        state.isPlaying = false;
+        state.position = state.duration;
+        stopProgressTimer();
+        updateUi();
+      })
+    };
+  };
+
+  const createSoundCloudPlayer = (iframe, events) => {
+    const soundCloud = window["SC"];
+    if (!soundCloud?.Widget || !iframe) return null;
+    const options = { auto_play: true, hide_related: true, show_comments: false, show_reposts: false, visual: false };
+    const player = { pendingUrl: null, ready: false, widget: null };
+
+    const bindWidgetEvents = () => {
+      player.widget.bind(soundCloud.Widget.Events.READY, () => {
+        player.ready = true;
+        if (player.pendingUrl) player.widget.load(player.pendingUrl, options);
+      });
+      player.widget.bind(soundCloud.Widget.Events.PLAY, events.play);
+      player.widget.bind(soundCloud.Widget.Events.PAUSE, events.pause);
+      player.widget.bind(soundCloud.Widget.Events.FINISH, events.finish);
+    };
+
+    return {
+      isReady: () => player.ready,
+      load: (url) => {
+        player.pendingUrl = url;
+        if (player.ready) {
+          player.widget.load(url, options);
+          return;
+        }
+        if (iframe.src) return;
+        iframe.addEventListener("load", () => {
+          player.widget = soundCloud.Widget(iframe);
+          bindWidgetEvents();
+        }, { once: true });
+        iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=true&hide_related=true&show_comments=false&show_reposts=false&visual=false`;
+      },
+      getProgress: (callback) => {
+        player.widget.getPosition((position) => {
+          player.widget.getDuration((duration) => callback(position, duration));
+        });
+      },
+      toggle: () => {
+        player.widget.isPaused((isPaused) => {
+          if (isPaused) player.widget.play();
+          else player.widget.pause();
+        });
+      },
+      pause: () => {
+        if (player.ready) player.widget.pause();
+      },
+      seekTo: (milliseconds) => player.widget.seekTo(milliseconds)
+    };
+  };
+
+  // Mixcloud reports time in seconds; the player bar works in milliseconds.
+  const createMixcloudPlayer = (iframe, events) => {
+    const mixcloud = window["Mixcloud"];
+    if (!mixcloud?.PlayerWidget || !iframe) return null;
+    const player = { pendingKey: null, ready: false, widget: null };
+    const feedKey = (url) => new URL(url).pathname;
+
+    return {
+      isReady: () => player.ready,
+      load: (url) => {
+        const key = feedKey(url);
+        const isLoaded = player.pendingKey === key;
+        player.pendingKey = key;
+        if (player.ready) {
+          // Mixcloud ignores load() for the mix already in the widget, so restart it instead.
+          if (isLoaded) player.widget.play().then(() => player.widget.seek(0));
+          else player.widget.load(key, true);
+          return;
+        }
+        if (iframe.src) return;
+        iframe.addEventListener("load", () => {
+          player.widget = mixcloud.PlayerWidget(iframe);
+          player.widget.ready.then(() => {
+            player.ready = true;
+            player.widget.events.play.on(events.play);
+            player.widget.events.pause.on(events.pause);
+            player.widget.events.ended.on(events.finish);
+            if (player.pendingKey !== key) player.widget.load(player.pendingKey, true);
+          });
+        }, { once: true });
+        iframe.src = `https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&hide_artwork=1&autoplay=1&feed=${encodeURIComponent(key)}`;
+      },
+      getProgress: (callback) => {
+        Promise.all([player.widget.getPosition(), player.widget.getDuration()])
+          .then(([position, duration]) => callback(position * 1000, duration * 1000));
+      },
+      toggle: () => player.widget.togglePlay(),
+      pause: () => {
+        if (player.ready) player.widget.pause();
+      },
+      seekTo: (milliseconds) => player.widget.seek(milliseconds / 1000)
+    };
+  };
+
+  const players = {
+    soundcloud: createSoundCloudPlayer(document.querySelector("[data-player-frame='soundcloud'] iframe"), playbackEvents("soundcloud")),
+    mixcloud: createMixcloudPlayer(document.querySelector("[data-player-frame='mixcloud'] iframe"), playbackEvents("mixcloud"))
+  };
+
   const showPlayer = () => {
     shell.hidden = false;
     document.body.classList.add("has-player");
   };
 
   const loadTrack = (track) => {
+    const provider = playbackProvider(track.url);
+    if (state.provider && state.provider !== provider) activePlayer()?.pause();
+    stopProgressTimer();
     state.currentTrack = track;
+    state.provider = provider;
     state.duration = 0;
     state.position = 0;
     state.isPlaying = false;
     showPlayer();
     updateUi();
-
-    if (state.ready) {
-      state.widget.load(track.url, { auto_play: true, hide_related: true, show_comments: false, show_reposts: false, visual: false });
-      return;
-    }
-
-    initializeWidget(track);
+    activePlayer()?.load(track.url);
   };
 
   const seekTo = (ratio) => {
-    if (!state.widget || !state.ready || !state.duration) return;
+    if (!isReady() || !state.duration) return;
     state.position = Math.round(Math.min(Math.max(ratio, 0), 1) * state.duration);
-    state.widget.seekTo(state.position);
+    activePlayer().seekTo(state.position);
     updateUi();
   };
 
-  const soundCloud = window["SC"];
-  if (!soundCloud?.Widget) return;
-  const bindWidgetEvents = () => {
-    state.widget.bind(soundCloud.Widget.Events.READY, () => {
-      state.ready = true;
-      if (state.currentTrack) loadTrack(state.currentTrack);
-    });
-    state.widget.bind(soundCloud.Widget.Events.PLAY, () => {
-      state.isPlaying = true;
-      startProgressTimer();
-      updateUi();
-    });
-    state.widget.bind(soundCloud.Widget.Events.PAUSE, () => {
-      state.isPlaying = false;
-      stopProgressTimer();
-      refreshProgress();
-      updateUi();
-    });
-    state.widget.bind(soundCloud.Widget.Events.FINISH, () => {
-      state.isPlaying = false;
-      state.position = state.duration;
-      stopProgressTimer();
-      updateUi();
-    });
-  };
-
-  const initializeWidget = (track) => {
-    iframe.addEventListener("load", () => {
-      state.widget = soundCloud.Widget(iframe);
-      bindWidgetEvents();
-    }, { once: true });
-    iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(track.url)}&auto_play=true&hide_related=true&show_comments=false&show_reposts=false&visual=false`;
-  };
-
   const togglePlayback = () => {
-    if (!state.currentTrack || !state.ready) return;
-    state.widget.isPaused((isPaused) => {
-      if (isPaused) state.widget.play();
-      else state.widget.pause();
-    });
+    if (!state.currentTrack || !isReady()) return;
+    activePlayer().toggle();
   };
 
   toggle.addEventListener("click", togglePlayback);
   closeButton.addEventListener("click", () => {
-    if (state.ready) state.widget.pause();
+    activePlayer()?.pause();
     shell.hidden = true;
     document.body.classList.remove("has-player");
   });
@@ -358,7 +448,7 @@ const setupPlayer = () => {
       url: button.dataset.playUrl,
       artwork: releaseArtwork?.currentSrc || releaseArtwork?.src || ""
     };
-    if (state.currentTrack?.id === track.id && state.ready) {
+    if (state.currentTrack?.id === track.id && isReady()) {
       togglePlayback();
       showPlayer();
       return;

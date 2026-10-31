@@ -16,7 +16,7 @@
     <meta name="twitter:description" content="AGOSTO is an Amsterdam-based DJ and electronic music producer focused on raw, industrial, dark and hypnotic techno.">
     <meta name="twitter:image" content="https://agostosound.com/static/branding/og-image.png">
     <link rel="icon" href="./static/branding/favicon.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=3">
     <title> AGOSTO  |  Chapter one </title>
   </head>
   <body>
@@ -95,8 +95,11 @@
               <a class="player-source" data-player-source target="_blank" rel="noreferrer">via SoundCloud</a>
               <button class="player-icon-button" type="button" data-player-close aria-label="Close player">x</button>
             </div>
-            <div class="soundcloud-frame" data-player-frame aria-hidden="true">
+            <div class="player-frame" data-player-frame="soundcloud" aria-hidden="true">
               <iframe title="SoundCloud playback controller" tabindex="-1" allow="autoplay"></iframe>
+            </div>
+            <div class="player-frame" data-player-frame="mixcloud" aria-hidden="true">
+              <iframe title="Mixcloud playback controller" tabindex="-1" allow="autoplay; encrypted-media"></iframe>
             </div>
           </div>
         </div>
@@ -160,6 +163,7 @@
       </div>
     </footer>
     <script src="https://w.soundcloud.com/player/api.js" defer></script>
-    <script src="./script.js" defer></script>
+    <script src="https://widget.mixcloud.com/media/js/widgetApi.js" defer></script>
+    <script src="./script.js?v=4" defer></script>
   </body>
 </html>
